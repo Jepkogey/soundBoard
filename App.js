@@ -1,6 +1,7 @@
 import { StatusBar } from 'expo-status-bar';
 import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { useEffect, useState } from "react";
+//import Sound from 'react-native-sound';
 
 export default function App() {
     const [flashLights, setFlashLights] = useState([0, 1, 2, 3]);
@@ -59,7 +60,7 @@ export default function App() {
     useEffect(() => {
         const initialSelectedLights = [];
         for (let i = 0; i < flashLights.length; i++) {
-            initialSelectedLights.push({color: getRandomLight(), sound: i + 1 });
+            initialSelectedLights.push({ color: getRandomLight(), sound: i + 1 });
         }
         setSelectedLights(initialSelectedLights);
     }, []);
