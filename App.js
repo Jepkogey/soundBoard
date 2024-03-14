@@ -1,7 +1,7 @@
 import { StatusBar } from 'expo-status-bar';
 import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { useEffect, useState } from "react";
-//import Sound from 'react-native-sound';
+import {Audio} from 'expo-av';
 
 export default function App() {
     const [flashLights, setFlashLights] = useState([0, 1, 2, 3]);
@@ -15,6 +15,7 @@ export default function App() {
     const [stage, setStage] = useState({ index: 1, flashes: 3 });
     const [flashes, setFlashes] = useState([]);
     const [blinkingIndex, setBlinkingIndex] = useState(-1);
+    const [soundObject, setsoundObject] = useState(null);
 
     function getRandomLight() {
         return colorLights[Math.floor((Math.random() * colorLights.length))];
@@ -38,19 +39,33 @@ export default function App() {
         setGameStatus("Stoped");
     }
 
-    const lightPressed = (light) => {
-        const newDialedLights = [...dialedLights, light.sound];
-        const newRecordingLights = [...recordingLights, light.sound];
+    const lightPressed = async (light) => {
+        console.log("lightpressed");
+        const newDialedLights = [...dialedLights, light.soundObject];
+        const newRecordingLights = [...recordingLights, light.soundObject];
 
         setDialedLights(newDialedLights);
         setRecordingLights(newRecordingLights);
+        const soundFilePath = require('./assets/sounds/click.mp3');
+        const { sound } = await Audio.Sound.createAsync(soundFilePath);
+        setsoundObject(sound);
+        try {
+           
+                console.log("Playing");
+                await soundObject.playAsync();
+               
+         
+            
+        } catch (error) {
+            console.error('Failed to play the sound', error);
+        }
+    
 
         if (newRecordingLights.length === 3) {
             setGameStatus("You made a banger!");
         }
     };
-
-
+   
     const AppButton = ({ onPress, title }) => (
         <TouchableOpacity onPress={onPress} style={styles.appButtonContainer}>
             <Text style={styles.appButtonText}>{title}</Text>
@@ -94,7 +109,7 @@ export default function App() {
             <Text>{gameStatus}</Text>
             <Text>Level: {stage.index}, {stage.flashes} clicks</Text>
             <View style={styles.lightsContainer}>
-                {selectedLights.map((l, i) => <Light key={i} index={i} onPress={() => lightPressed(l)} />)}
+                {selectedLights.map((l, i) => <Light key={i} index={i} onPress={() => { lightPressed(l) }} />)}
             </View>
             <View style={styles.buttonsContainer}>
                 <AppButton onPress={startRecording} title="Start Recording" />
