@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import {Audio} from 'expo-av';
 
 export default function App() {
+    //state declarations
     const [flashLights, setFlashLights] = useState([0, 1, 2, 3]);
     const [gameStatus, setGameStatus] = useState("");
     const [dialedLights, setDialedLights] = useState([]);
@@ -17,6 +18,7 @@ export default function App() {
     const [blinkingIndex, setBlinkingIndex] = useState(-1);
     const [soundObject, setsoundObject] = useState(null);
 
+    //getting random light
     function getRandomLight() {
         return colorLights[Math.floor((Math.random() * colorLights.length))];
     }
@@ -29,16 +31,16 @@ export default function App() {
         setDialedLights([]);
         setStage({ index: stage.index + 1, flashes: stage.flashes + 1 });
     }
-
+     //function to start recording
     const startRecording = () => {
         setRecordingLights([]);
         setGameStatus("Recording...");
     }
-
+    //function to stop recording
     const stopRecording = () => {
         setGameStatus("Stoped");
     }
-
+    //function to handle pressed lights
     const lightPressed = async (light) => {
         console.log("lightpressed");
         const newDialedLights = [...dialedLights, light.soundObject];
